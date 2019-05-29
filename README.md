@@ -9,5 +9,6 @@ Generate PropTypes from openAPI 3 schemas
 
 ## Roadmap
 
+- Pass options through CLI
 - Add tests
 - Going UMD?

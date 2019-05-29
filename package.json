@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/unic/openapi-proptypes-generator/issues"
   },
-  "homepage": "https://github.com/unic/openapi-proptypes-generator#readme"
+  "homepage": "https://github.com/unic/openapi-proptypes-generator#readme",
+  "dependencies": {
+    "minimist": "1.2.0",
+    "swagger-parser": "6.0.5"
+  }
 }
