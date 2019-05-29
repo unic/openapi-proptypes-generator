@@ -1,6 +1,6 @@
 # openapi-proptypes-generator
 
-Generate PropTypes from openAPI 3 schemas
+Generate PropTypes from openAPI 3 JSON schemas
 
 ## Further development
 
