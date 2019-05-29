@@ -1,6 +1,7 @@
 let INDENT_LEVEL = 1;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
+const QUOTE_CHAR = '\'';
 
 /**
  * Entry point to generate the `PropTypes`.
@@ -73,7 +74,7 @@ const propertiesReducer = (properties, requiredProps) => (str, propertyName) => 
 const propTypeString = (name, property, requiredProps) => {
 	let str = '';
 	// Add quotes to property name when it contains non-words chars
-	const propertyKey = !(/[^a-z]/i).test(name) ? `${name}` : `'${name}'`;
+	const propertyKey = !(/[^a-z]/i).test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
 
 	str += `${propertyKey}: ${getPropTypeValue(name, property)}`;
 	str += `${getRequired(name, property, requiredProps)}\n`;
