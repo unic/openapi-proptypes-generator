@@ -65,7 +65,7 @@ const propertiesReducer = (properties, requiredProps) => (str, propertyName) => 
 };
 
 /**
- * Generates the string for a given.
+ * Generates the string for a given property.
  * @param {String} name - The key (name) of the property.
  * @param {Object} property - The property to generate the value from.
  * @param {Array} requiredProps - The array of required properties in a schema.
