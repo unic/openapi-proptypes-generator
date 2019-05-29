@@ -1,0 +1,29 @@
+{
+  "name": "openapi-proptypes-generator",
+  "version": "1.0.0",
+  "description": "Generate PropTypes from openAPI 3 schemas",
+  "main": "src/schemaToPropTypes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unic/openapi-proptypes-generator.git"
+  },
+  "keywords": [
+    "openapi",
+    "opne",
+    "api",
+    "react",
+    "proptypes",
+    "prop-types",
+    "generator",
+    "swagger"
+  ],
+  "author": "Oriol Torrent Florensa @ Unic AG (https://unic.com)",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/unic/openapi-proptypes-generator/issues"
+  },
+  "homepage": "https://github.com/unic/openapi-proptypes-generator#readme"
+}
