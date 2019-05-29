@@ -74,7 +74,7 @@ const getPropTypeValue = (propertyName, property) => {
 
 		case 'object':
 			if (property.$ref) {
-				str += `shape(${getRef(property.$ref)})`;
+				str += `shape(${formatComponentName(getRef(property.$ref))})`;
 			} else {
 				INDENT_LEVEL += 1;
 				const indentation = getIndentation(INDENT_LEVEL - 1);
