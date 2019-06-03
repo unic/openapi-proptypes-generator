@@ -28,7 +28,7 @@ const getIndentation = (indentation = indentLevel) =>
  * @returns {function(args: Array): string} - The decorated String
  * @private
  */
-const _indentDecorator = (func, prefix = true) => args => {
+const useIndentation = (func, prefix = true) => args => {
 	const indents = getIndentation();
 
 	return `${prefix ? indents : ''}${func.apply(this, args)}${prefix ? '' : indents}`;
@@ -140,7 +140,7 @@ const propTypeString = (name, property, requiredProps) => {
  * @returns {function(str: String, propertyName: String): string} - The `reduce` callback function, which gets the accumulator (`str`) and the current value (`propertyName`).
  */
 const propertiesReducer = (properties, requiredProps) => (str, propertyName) => {
-	const propTypeStringIndented = _indentDecorator(propTypeString);
+	const propTypeStringIndented = useIndentation(propTypeString);
 	const propType = propTypeStringIndented([
 		propertyName,
 		properties[propertyName],
@@ -158,7 +158,7 @@ const propertiesReducer = (properties, requiredProps) => (str, propertyName) => 
  */
 const getPropTypes = (schemaName, schema) => {
 	const requiredProps = 'required' in schema && schema.required;
-	const propTypeStringIndented = _indentDecorator(propTypeString);
+	const propTypeStringIndented = useIndentation(propTypeString);
 	const reducer = propertiesReducer(schema.properties, requiredProps);
 
 	return schema.type === 'object'
