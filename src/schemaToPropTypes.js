@@ -66,7 +66,7 @@ const getPropTypeValue = (propertyName, property) => {
 		case 'array':
 			if (property.items.$ref) {
 				const extractRefProp = formatComponentName(getRef(property.items.$ref));
-				str += `arrayOf(${extractRefProp})`;
+				str += `arrayOf(PropTypes.shape(${extractRefProp}))`;
 			} else {
 				str += `arrayOf(${getPropTypeValue(propertyName, property.items)})`;
 			}
