@@ -1,4 +1,5 @@
 let indentLevel = 1;
+const FILE_IMPORTS = `import PropTypes from 'prop-types';\n\n`;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
@@ -183,12 +184,11 @@ const schemasReducer = schemas => (str, schemaName) => {
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
 const generatePropTypes = api => {
-	const str = `import PropTypes from 'prop-types';\n\n`;
 	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
 	const schemas = hasSchemas && api.components.schemas;
 
 	return hasSchemas
-		? Object.keys(schemas).reduce(schemasReducer(schemas), str)
+		? Object.keys(schemas).reduce(schemasReducer(schemas), FILE_IMPORTS)
 		: new Error('API error: Missing schemas');
 };
 
