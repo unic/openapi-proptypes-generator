@@ -1,4 +1,5 @@
-let INDENT_LEVEL = 1;
+let indentLevel = 1;
+const FILE_IMPORTS = `import PropTypes from 'prop-types';\n\n`;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
@@ -13,13 +14,11 @@ const formatComponentName = name =>
 
 /**
  * Generates the required amount of indentation.
- * @param {Number} indentLevel - The amount of indentation.
+ * @param {Number} indentation - The amount of indentation.
  * @returns {string} - A string with indents
  */
-const getIndentation = (indentLevel = INDENT_LEVEL) =>
-	indentLevel && typeof indentLevel === 'number'
-		? [...Array(Math.trunc(indentLevel))].map(() => `${INDENT_CHAR}`).join('')
-		: '';
+const getIndentation = (indentation = indentLevel) =>
+	indentation && typeof indentation === 'number' ? INDENT_CHAR.repeat(Math.trunc(indentLevel)) : '';
 
 /**
  * Decorator to add indentation to the strings output from any needed functions.
@@ -28,7 +27,7 @@ const getIndentation = (indentLevel = INDENT_LEVEL) =>
  * @returns {function(args: Array): string} - The decorated String
  * @private
  */
-const _indentDecorator = (func, prefix = true) => args => {
+const useIndentation = (func, prefix = true) => args => {
 	const indents = getIndentation();
 
 	return `${prefix ? indents : ''}${func.apply(this, args)}${prefix ? '' : indents}`;
@@ -60,27 +59,27 @@ const getRef = ref => ref.split('/').pop();
  * @returns {string}
  */
 const getPropTypeValue = (propertyName, property) => {
-	let str = 'PropTypes.';
+	let propType = ``;
 
 	switch (property.type) {
 		case 'array':
 			if (property.items.$ref) {
 				const extractRefProp = formatComponentName(getRef(property.items.$ref));
-				str += `arrayOf(${extractRefProp})`;
+				propType += `arrayOf(PropTypes.shape(${extractRefProp}))`;
 			} else {
-				str += `arrayOf(${getPropTypeValue(propertyName, property.items)})`;
+				propType += `arrayOf(${getPropTypeValue(propertyName, property.items)})`;
 			}
 			break;
 
 		case 'object':
 			if (property.$ref) {
-				str += `shape(${formatComponentName(getRef(property.$ref))})`;
+				propType += `shape(${formatComponentName(getRef(property.$ref))})`;
 			} else {
-				INDENT_LEVEL += 1;
-				const indentation = getIndentation(INDENT_LEVEL - 1);
+				const indentation = getIndentation();
+				indentLevel += 1;
 				// eslint-disable-next-line no-use-before-define
-				str += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
-				INDENT_LEVEL -= 1;
+				propType += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
+				indentLevel -= 1;
 			}
 			break;
 
@@ -89,7 +88,7 @@ const getPropTypeValue = (propertyName, property) => {
 		case 'long':
 		case 'float':
 		case 'double':
-			str += 'number';
+			propType += 'number';
 			break;
 
 		case 'string':
@@ -98,21 +97,21 @@ const getPropTypeValue = (propertyName, property) => {
 		case 'date':
 		case 'DATETIME':
 		case 'password':
-			str += 'string';
+			propType += 'string';
 			break;
 
 		case 'boolean':
-			str += 'bool';
+			propType += 'bool';
 			break;
 
 		default:
 			if (property.$ref) {
-				str += getPropTypeValue(propertyName, { type: 'object', ...property });
+				propType = getPropTypeValue(propertyName, { type: 'object', ...property });
 			}
 			break;
 	}
 
-	return str;
+	return `PropsTypes.${propType}`;
 };
 
 /**
@@ -125,7 +124,7 @@ const getPropTypeValue = (propertyName, property) => {
 const propTypeString = (name, property, requiredProps) => {
 	let str = '';
 	// Add quotes to property name when it contains non-words chars
-	const propertyKey = !/[^a-z]/i.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
+	const propertyKey = /^[a-z].*/gi.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
 
 	str += `${propertyKey}: ${getPropTypeValue(name, property)}`;
 	str += `${getRequired(name, property, requiredProps)}\n`;
@@ -140,12 +139,8 @@ const propTypeString = (name, property, requiredProps) => {
  * @returns {function(str: String, propertyName: String): string} - The `reduce` callback function, which gets the accumulator (`str`) and the current value (`propertyName`).
  */
 const propertiesReducer = (properties, requiredProps) => (str, propertyName) => {
-	const propTypeStringIndented = _indentDecorator(propTypeString);
-	const propType = propTypeStringIndented([
-		propertyName,
-		properties[propertyName],
-		requiredProps,
-	]);
+	const propTypeStringIndented = useIndentation(propTypeString);
+	const propType = propTypeStringIndented([propertyName, properties[propertyName], requiredProps]);
 
 	return `${str}${propType}`;
 };
@@ -158,7 +153,7 @@ const propertiesReducer = (properties, requiredProps) => (str, propertyName) => 
  */
 const getPropTypes = (schemaName, schema) => {
 	const requiredProps = 'required' in schema && schema.required;
-	const propTypeStringIndented = _indentDecorator(propTypeString);
+	const propTypeStringIndented = useIndentation(propTypeString);
 	const reducer = propertiesReducer(schema.properties, requiredProps);
 
 	return schema.type === 'object'
@@ -167,12 +162,13 @@ const getPropTypes = (schemaName, schema) => {
 };
 
 /**
- * Curry Reducer to stack the strings of several PropTypes. It passes the needed information in the reducer context.
- * @param {Object} schemas - The `schemas` object parsed from the openAPI file.
- * @returns {function(str: String, schemaName: String): String} - Adds up all the strings from every PropType.
+ * Reducer to stack the strings of several PropTypes. It passes the needed information in the reducer context.
+ * @param {String} str - The accumulator.
+ * @param {String} schemaName - The key (name) of the schema.
+ * @param {Object} schema - The schema to generate PropTypes from.
+ * @returns {string} - Adds up all the strings from every PropType.
  */
-const schemasReducer = schemas => (str, schemaName) => {
-	const schema = schemas[schemaName];
+const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
 	return `${str}export const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n\n`;
 };
@@ -183,12 +179,11 @@ const schemasReducer = schemas => (str, schemaName) => {
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
 const generatePropTypes = api => {
-	const str = `import PropTypes from 'prop-types';\n\n`;
 	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
 	const schemas = hasSchemas && api.components.schemas;
 
 	return hasSchemas
-		? Object.keys(schemas).reduce(schemasReducer(schemas), str)
+		? Object.entries(schemas).reduce(schemasReducer, FILE_IMPORTS)
 		: new Error('API error: Missing schemas');
 };
 
