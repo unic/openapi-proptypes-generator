@@ -168,12 +168,13 @@ const getPropTypes = (schemaName, schema) => {
 };
 
 /**
- * Curry Reducer to stack the strings of several PropTypes. It passes the needed information in the reducer context.
- * @param {Object} schemas - The `schemas` object parsed from the openAPI file.
- * @returns {function(str: String, schemaName: String): String} - Adds up all the strings from every PropType.
+ * Reducer to stack the strings of several PropTypes. It passes the needed information in the reducer context.
+ * @param {String} str - The accumulator.
+ * @param {String} schemaName - The key (name) of the schema.
+ * @param {Object} schema - The schema to generate PropTypes from.
+ * @returns {string} - Adds up all the strings from every PropType.
  */
-const schemasReducer = schemas => (str, schemaName) => {
-	const schema = schemas[schemaName];
+const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
 	return `${str}export const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n\n`;
 };
@@ -188,7 +189,7 @@ const generatePropTypes = api => {
 	const schemas = hasSchemas && api.components.schemas;
 
 	return hasSchemas
-		? Object.keys(schemas).reduce(schemasReducer(schemas), FILE_IMPORTS)
+		? Object.entries(schemas).reduce(schemasReducer, FILE_IMPORTS)
 		: new Error('API error: Missing schemas');
 };
 
