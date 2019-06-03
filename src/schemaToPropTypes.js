@@ -60,26 +60,26 @@ const getRef = ref => ref.split('/').pop();
  * @returns {string}
  */
 const getPropTypeValue = (propertyName, property) => {
-	let str = 'PropTypes.';
+	let propType = ``;
 
 	switch (property.type) {
 		case 'array':
 			if (property.items.$ref) {
 				const extractRefProp = formatComponentName(getRef(property.items.$ref));
-				str += `arrayOf(PropTypes.shape(${extractRefProp}))`;
+				propType += `arrayOf(PropTypes.shape(${extractRefProp}))`;
 			} else {
-				str += `arrayOf(${getPropTypeValue(propertyName, property.items)})`;
+				propType += `arrayOf(${getPropTypeValue(propertyName, property.items)})`;
 			}
 			break;
 
 		case 'object':
 			if (property.$ref) {
-				str += `shape(${formatComponentName(getRef(property.$ref))})`;
+				propType += `shape(${formatComponentName(getRef(property.$ref))})`;
 			} else {
 				const indentation = getIndentation();
 				indentLevel += 1;
 				// eslint-disable-next-line no-use-before-define
-				str += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
+				propType += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
 				indentLevel -= 1;
 			}
 			break;
@@ -89,7 +89,7 @@ const getPropTypeValue = (propertyName, property) => {
 		case 'long':
 		case 'float':
 		case 'double':
-			str += 'number';
+			propType += 'number';
 			break;
 
 		case 'string':
@@ -98,21 +98,21 @@ const getPropTypeValue = (propertyName, property) => {
 		case 'date':
 		case 'DATETIME':
 		case 'password':
-			str += 'string';
+			propType += 'string';
 			break;
 
 		case 'boolean':
-			str += 'bool';
+			propType += 'bool';
 			break;
 
 		default:
 			if (property.$ref) {
-				str = getPropTypeValue(propertyName, { type: 'object', ...property });
+				propType = getPropTypeValue(propertyName, { type: 'object', ...property });
 			}
 			break;
 	}
 
-	return str;
+	return `PropsTypes.${propType}`;
 };
 
 /**
