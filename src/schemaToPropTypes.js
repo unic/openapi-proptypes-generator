@@ -76,8 +76,8 @@ const getPropTypeValue = (propertyName, property) => {
 			if (property.$ref) {
 				str += `shape(${formatComponentName(getRef(property.$ref))})`;
 			} else {
+				const indentation = getIndentation();
 				indentLevel += 1;
-				const indentation = getIndentation(indentLevel - 1);
 				// eslint-disable-next-line no-use-before-define
 				str += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
 				indentLevel -= 1;
