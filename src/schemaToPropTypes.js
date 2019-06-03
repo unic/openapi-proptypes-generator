@@ -18,9 +18,7 @@ const formatComponentName = name =>
  * @returns {string} - A string with indents
  */
 const getIndentation = (indentation = indentLevel) =>
-	indentation && typeof indentation === 'number'
-		? INDENT_CHAR.repeat(Math.trunc(indentLevel))
-		: '';
+	indentation && typeof indentation === 'number' ? INDENT_CHAR.repeat(Math.trunc(indentLevel)) : '';
 
 /**
  * Decorator to add indentation to the strings output from any needed functions.
@@ -142,11 +140,7 @@ const propTypeString = (name, property, requiredProps) => {
  */
 const propertiesReducer = (properties, requiredProps) => (str, propertyName) => {
 	const propTypeStringIndented = useIndentation(propTypeString);
-	const propType = propTypeStringIndented([
-		propertyName,
-		properties[propertyName],
-		requiredProps,
-	]);
+	const propType = propTypeStringIndented([propertyName, properties[propertyName], requiredProps]);
 
 	return `${str}${propType}`;
 };
