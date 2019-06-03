@@ -107,7 +107,7 @@ const getPropTypeValue = (propertyName, property) => {
 
 		default:
 			if (property.$ref) {
-				str += getPropTypeValue(propertyName, { type: 'object', ...property });
+				str = getPropTypeValue(propertyName, { type: 'object', ...property });
 			}
 			break;
 	}
