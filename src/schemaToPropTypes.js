@@ -18,7 +18,7 @@ const formatComponentName = name =>
  */
 const getIndentation = (indentation = indentLevel) =>
 	indentation && typeof indentation === 'number'
-		? [...Array(Math.trunc(indentation))].map(() => `${INDENT_CHAR}`).join('')
+		? INDENT_CHAR.repeat(Math.trunc(indentLevel))
 		: '';
 
 /**
