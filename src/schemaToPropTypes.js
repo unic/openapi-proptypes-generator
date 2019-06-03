@@ -1,4 +1,4 @@
-let INDENT_LEVEL = 1;
+let indentLevel = 1;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
@@ -13,12 +13,12 @@ const formatComponentName = name =>
 
 /**
  * Generates the required amount of indentation.
- * @param {Number} indentLevel - The amount of indentation.
+ * @param {Number} indentation - The amount of indentation.
  * @returns {string} - A string with indents
  */
-const getIndentation = (indentLevel = INDENT_LEVEL) =>
-	indentLevel && typeof indentLevel === 'number'
-		? [...Array(Math.trunc(indentLevel))].map(() => `${INDENT_CHAR}`).join('')
+const getIndentation = (indentation = indentLevel) =>
+	indentation && typeof indentation === 'number'
+		? [...Array(Math.trunc(indentation))].map(() => `${INDENT_CHAR}`).join('')
 		: '';
 
 /**
@@ -76,11 +76,11 @@ const getPropTypeValue = (propertyName, property) => {
 			if (property.$ref) {
 				str += `shape(${formatComponentName(getRef(property.$ref))})`;
 			} else {
-				INDENT_LEVEL += 1;
-				const indentation = getIndentation(INDENT_LEVEL - 1);
+				indentLevel += 1;
+				const indentation = getIndentation(indentLevel - 1);
 				// eslint-disable-next-line no-use-before-define
 				str += `shape({\n${getPropTypes(propertyName, property)}${indentation}})`;
-				INDENT_LEVEL -= 1;
+				indentLevel -= 1;
 			}
 			break;
 
