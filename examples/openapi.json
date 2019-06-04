@@ -65,7 +65,7 @@
               "prop1": {
                 "type": "string"
               },
-              "prop2": {
+              "2prop": {
                 "type": "string"
               },
               "nestedNestedObject": {
