@@ -1,5 +1,6 @@
 let indentLevel = 1;
-const FILE_IMPORTS = `import PropTypes from 'prop-types';\n\n`;
+const ESLINT_OVERWRITES = `/* eslint no-use-before-define: 0 */\n`;
+const FILE_IMPORTS = `import PropTypes from 'prop-types';\n`;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
@@ -111,7 +112,7 @@ const getPropTypeValue = (propertyName, property) => {
 			break;
 	}
 
-	return `PropsTypes.${propType}`;
+	return `PropTypes.${propType}`;
 };
 
 /**
@@ -170,7 +171,7 @@ const getPropTypes = (schemaName, schema) => {
  */
 const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
-	return `${str}export const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n\n`;
+	return `${str}\nexport const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n`;
 };
 
 /**
@@ -179,11 +180,12 @@ const schemasReducer = (str, [schemaName, schema]) => {
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
 const generatePropTypes = api => {
+	const initialString = `${ESLINT_OVERWRITES}${FILE_IMPORTS}`;
 	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
 	const schemas = hasSchemas && api.components.schemas;
 
 	return hasSchemas
-		? Object.entries(schemas).reduce(schemasReducer, FILE_IMPORTS)
+		? Object.entries(schemas).reduce(schemasReducer, initialString)
 		: new Error('API error: Missing schemas');
 };
 
