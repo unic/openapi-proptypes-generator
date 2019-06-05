@@ -36,3 +36,4 @@ npm run generate
 - Pass options through CLI
 - Add tests
 - Going UMD?
+- Move to a template(s) based system instead of a string generation?
