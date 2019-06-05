@@ -1,5 +1,5 @@
 let indentLevel = 1;
-const FILE_IMPORTS = `import PropTypes from 'prop-types';\n\n`;
+const FILE_IMPORTS = `/* eslint no-use-before-define: 0 */\nimport PropTypes from 'prop-types';\n`;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
@@ -111,7 +111,7 @@ const getPropTypeValue = (propertyName, property) => {
 			break;
 	}
 
-	return `PropsTypes.${propType}`;
+	return `PropTypes.${propType}`;
 };
 
 /**
@@ -170,7 +170,7 @@ const getPropTypes = (schemaName, schema) => {
  */
 const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
-	return `${str}export const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n\n`;
+	return `${str}\nexport const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n`;
 };
 
 /**
