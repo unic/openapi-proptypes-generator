@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/unic/openapi-proptypes-generator#readme",
   "dependencies": {
+    "js-yaml": "^3.13.1",
     "minimist": "1.2.0",
     "swagger-parser": "6.0.5"
   },

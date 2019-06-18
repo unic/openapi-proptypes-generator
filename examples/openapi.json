@@ -21,115 +21,126 @@
   },
   "components": {
     "schemas": {
-      "img": {
+      "datamodels": {
         "type": "object",
-        "required": ["src", "alt"],
         "properties": {
-          "src": {
-            "type": "string"
+          "img": {
+            "type": "object",
+            "required": ["src", "alt"],
+            "properties": {
+              "src": {
+                "type": "string"
+              },
+              "alt": {
+                "type": "string"
+              }
+            }
           },
-          "alt": {
-            "type": "string"
-          }
-        }
-      },
-      "link": {
-        "type": "object",
-        "properties": {
-          "href": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          }
-        }
-      },
-      "carouselTeasers": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/newsTeaser"
-        }
-      },
-      "aSimpleString": {
-        "type": "string"
-      },
-      "aNumber": {
-        "type": "number"
-      },
-      "anObject": {
-        "type": "object",
-        "properties": {
-          "aNestedObject": {
+          "link": {
             "type": "object",
             "properties": {
-              "prop1": {
+              "href": {
                 "type": "string"
               },
-              "2prop": {
+              "text": {
                 "type": "string"
-              },
-              "nestedNestedObject": {
+              }
+            }
+          },
+          "carouselTeasers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/datamodels/properties/newsTeaser"
+            }
+          },
+          "aSimpleString": {
+            "type": "string"
+          },
+          "aNumber": {
+            "type": "number"
+          },
+          "anObject": {
+            "type": "object",
+            "properties": {
+              "aNestedObject": {
                 "type": "object",
                 "properties": {
-                  "myArray": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
+                  "prop1": {
+                    "type": "string"
+                  },
+                  "2prop": {
+                    "type": "string"
+                  },
+                  "nestedNestedObject": {
+                    "type": "object",
+                    "properties": {
+                      "myArray": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
               }
             }
-          }
-        }
-      },
-      "newsTeaser": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
           },
-          "description": {
-            "type": "string"
-          },
-          "link": {
-            "$ref": "#/components/schemas/link"
-          },
-          "img": {
-            "$ref": "#/components/schemas/img"
-          }
-        }
-      },
-      "footer": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "websiteDescription": {
-            "type": "string"
-          },
-          "logo": {
-            "$ref": "#/components/schemas/img"
-          },
-          "copyright": {
-            "type": "string"
-          },
-          "footerLinks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/link"
+          "newsTeaser": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "link": {
+                "$ref": "#/components/schemas/datamodels/properties/link"
+              },
+              "img": {
+                "$ref": "#/components/schemas/datamodels/properties/img"
+              }
             }
           },
-          ":type": {
-            "type": "string"
+          "footer": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "websiteDescription": {
+                "type": "string"
+              },
+              "logo": {
+                "$ref": "#/components/schemas/datamodels/properties/img"
+              },
+              "copyright": {
+                "type": "string"
+              },
+              "footerLinks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/datamodels/properties/link"
+                }
+              },
+              ":type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "websiteDescription",
+              "logo"
+            ]
+          },
+          ":itemsOrder": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
-        },
-        "required": [
-          "title",
-          "websiteDescription",
-          "logo"
-        ]
+        }
       }
     }
   }
