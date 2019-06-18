@@ -10,8 +10,11 @@ const QUOTE_CHAR = "'";
  * @param {String} name - The key string from the schema.
  * @returns {string}
  */
-const formatComponentName = name =>
-	`${name.charAt(0).toUpperCase()}${name.slice(1)}${COMPONENT_NAME_SUFFIX}`;
+const formatComponentName = name => {
+	const safeName = name.replace(new RegExp(':', 'g'), '');
+
+	return `${safeName.charAt(0).toUpperCase()}${safeName.slice(1)}${COMPONENT_NAME_SUFFIX}`;
+};
 
 /**
  * Generates the required amount of indentation.
@@ -179,10 +182,14 @@ const schemasReducer = (str, [schemaName, schema]) => {
  * @param {Object} api - The parsed openAPI file.
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
-const generatePropTypes = api => {
+const generatePropTypes = (api, schemaToParse) => {
 	const initialString = `${ESLINT_OVERWRITES}${FILE_IMPORTS}`;
 	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
-	const schemas = hasSchemas && api.components.schemas;
+	let schemas = hasSchemas && api.components.schemas;
+
+	if (schemaToParse && api.components.schemas[schemaToParse]) {
+		schemas = api.components.schemas[schemaToParse].properties;
+	}
 
 	return hasSchemas
 		? Object.entries(schemas).reduce(schemasReducer, initialString)
