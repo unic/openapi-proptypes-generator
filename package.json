@@ -5,7 +5,8 @@
   "main": "src/schemaToPropTypes.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate": "index.js ./examples/openapi.json ./proptypes.js",
+    "generate-openapi": "index.js ./examples/openapi.json ./examples/proptypes-openapi.js datamodels",
+    "generate-swagger": "index.js examples/swagger.json ./examples/proptypes-swagger.js",
     "lint": "eslint --fix \"{index.js,src/*.js}\""
   },
   "repository": {
