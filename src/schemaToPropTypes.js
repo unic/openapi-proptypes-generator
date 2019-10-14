@@ -185,11 +185,34 @@ const schemasReducer = (str, [schemaName, schema]) => {
  */
 const generatePropTypes = (api, schemaToParse) => {
 	const initialString = `${ESLINT_OVERWRITES}${FILE_IMPORTS}`;
-	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
-	let schemas = hasSchemas && api.components.schemas;
 
-	if (schemaToParse && api.components.schemas[schemaToParse]) {
-		schemas = api.components.schemas[schemaToParse].properties;
+	let apiVersion;
+	let hasSchemas;
+	if (api && 'openapi' in api && parseFloat(api.openapi, 10) === 3) {
+		apiVersion = 'openapi3';
+		hasSchemas = 'components' in api && 'schemas' in api.components;
+	} else if (api && 'swagger' in api && parseFloat(api.swagger, 10) === 2) {
+		apiVersion = 'swagger2';
+		hasSchemas = 'definitions' in api;
+	}
+
+	let schemas;
+	if (hasSchemas) {
+		switch (apiVersion) {
+			case 'swagger2':
+				schemas =
+					schemaToParse && api.components.definitions[schemaToParse]
+						? api.components.definitions[schemaToParse].properties
+						: api.definitions;
+				break;
+			case 'openapi3':
+			default:
+				schemas =
+					schemaToParse && api.components.schemas[schemaToParse]
+						? api.components.schemas[schemaToParse].properties
+						: api.components.schemas;
+				break;
+		}
 	}
 
 	return hasSchemas
