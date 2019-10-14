@@ -28,7 +28,7 @@ Adding optional 3rd parameter - schemaToParse
 index.js ./examples/openapi.yaml ./proptypes.js datamodels
 ```
 
-will generate PropTypes only from given schema (if exists in source file, else it will generete all found schemas).
+will generate PropTypes only from given schema (if exists in source file, else it will generate all found schemas).
 
 Alternatively you can also set an npm script in your `package.json`:
 
