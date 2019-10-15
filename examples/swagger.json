@@ -1,0 +1,137 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Some Swagger Definitions example"
+  },
+  "paths": {
+    "/dummy": {
+      "get": {
+        "operationId": "dummy",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "img": {
+      "type": "object",
+      "required": ["src", "alt"],
+      "properties": {
+        "src": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "carouselTeasers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/newsTeaser"
+      }
+    },
+    "aSimpleString": {
+      "type": "string"
+    },
+    "aNumber": {
+      "type": "number"
+    },
+    "anObject": {
+      "type": "object",
+      "properties": {
+        "aNestedObject": {
+          "type": "object",
+          "properties": {
+            "prop1": {
+              "type": "string"
+            },
+            "2prop": {
+              "type": "string"
+            },
+            "nestedNestedObject": {
+              "type": "object",
+              "properties": {
+                "myArray": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "newsTeaser": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "link": {
+          "$ref": "#/definitions/link"
+        },
+        "img": {
+          "$ref": "#/definitions/img"
+        }
+      }
+    },
+    "footer": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "websiteDescription": {
+          "type": "string"
+        },
+        "logo": {
+          "$ref": "#/definitions/img"
+        },
+        "copyright": {
+          "type": "string"
+        },
+        "footerLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/link"
+          }
+        },
+        ":type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "websiteDescription",
+        "logo"
+      ]
+    },
+    ":itemsOrder": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

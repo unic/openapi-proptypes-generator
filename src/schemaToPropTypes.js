@@ -179,17 +179,40 @@ const schemasReducer = (str, [schemaName, schema]) => {
 
 /**
  * Entry point to generate the `PropTypes`.
- * @param {Object} api - The parsed openAPI file.
+ * @param {Object} api - The parsed api (openApi or Swagger) file.
  * @param {String} schemaToParse - optional - specific schema to be parsed
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
 const generatePropTypes = (api, schemaToParse) => {
 	const initialString = `${ESLINT_OVERWRITES}${FILE_IMPORTS}`;
-	const hasSchemas = api && 'components' in api && 'schemas' in api.components;
-	let schemas = hasSchemas && api.components.schemas;
 
-	if (schemaToParse && api.components.schemas[schemaToParse]) {
-		schemas = api.components.schemas[schemaToParse].properties;
+	let apiVersion;
+	let hasSchemas;
+	if (api && 'openapi' in api && parseFloat(api.openapi, 10) === 3) {
+		apiVersion = 'openapi3';
+		hasSchemas = 'components' in api && 'schemas' in api.components;
+	} else if (api && 'swagger' in api && parseFloat(api.swagger, 10) === 2) {
+		apiVersion = 'swagger2';
+		hasSchemas = 'definitions' in api;
+	}
+
+	let schemas;
+	if (hasSchemas) {
+		switch (apiVersion) {
+			case 'swagger2':
+				schemas =
+					schemaToParse && api.components.definitions[schemaToParse]
+						? api.components.definitions[schemaToParse].properties
+						: api.definitions;
+				break;
+			case 'openapi3':
+			default:
+				schemas =
+					schemaToParse && api.components.schemas[schemaToParse]
+						? api.components.schemas[schemaToParse].properties
+						: api.components.schemas;
+				break;
+		}
 	}
 
 	return hasSchemas
