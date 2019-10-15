@@ -179,7 +179,7 @@ const schemasReducer = (str, [schemaName, schema]) => {
 
 /**
  * Entry point to generate the `PropTypes`.
- * @param {Object} api - The parsed openAPI file.
+ * @param {Object} api - The parsed api (openApi or Swagger) file.
  * @param {String} schemaToParse - optional - specific schema to be parsed
  * @returns {String|Error} - The string with the whole `PropTypes` generated or an Error if it is a malformed file.
  */
