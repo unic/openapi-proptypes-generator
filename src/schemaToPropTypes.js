@@ -128,7 +128,7 @@ const getPropTypeValue = (propertyName, property) => {
 const propTypeString = (name, property, requiredProps) => {
 	let str = '';
 	// Add quotes to property name when it contains non-words chars
-	const propertyKey = /^[a-z].*/gi.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
+	const propertyKey = /^[a-z]\w+$/i.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
 
 	str += `${propertyKey}: ${getPropTypeValue(name, property)}`;
 	str += `${getRequired(name, property, requiredProps)}\n`;
