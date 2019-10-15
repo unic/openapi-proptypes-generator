@@ -52,3 +52,7 @@ export const FooterPropTypes = {
 export const ItemsOrderPropTypes = {
 	':itemsOrder': PropTypes.arrayOf(PropTypes.string),
 };
+
+export const OgsitePropTypes = {
+	'og:site': PropTypes.string,
+};

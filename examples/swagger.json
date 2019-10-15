@@ -132,6 +132,9 @@
       "items": {
         "type": "string"
       }
+    },
+    "og:site":  {
+      "type": "string"
     }
   }
 }
