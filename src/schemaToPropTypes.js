@@ -109,13 +109,37 @@ const getPropTypeValue = (propertyName, property) => {
 			break;
 
 		default:
-			if (property.$ref) {
-				propType = getPropTypeValue(propertyName, { type: 'object', ...property });
-			}
+			// eslint-disable-next-line no-use-before-define
+			propType += getPropTypeValueFromUntyped(propertyName, property);
 			break;
 	}
 
 	return `PropTypes.${propType}`;
+};
+
+/**
+ * Creates the string for the value of a untyped property.
+ * @param {String} propertyName - The key (name) of the property.
+ * @param {Object} property - The property to generate the value from.
+ * @returns {string}
+ */
+const getPropTypeValueFromUntyped = (propertyName, property) => {
+	let propType = ``;
+
+	if (property.$ref) {
+		propType = getPropTypeValue(propertyName, { type: 'object', ...property });
+	} else if (property.allOf) {
+		propType += 'arrayOf(';
+		property.allOf.forEach(item => {
+			indentLevel += 1;
+			const indentation = getIndentation();
+			propType += `\n${indentation}${getPropTypeValue(propertyName, item)},`;
+			indentLevel -= 1;
+		});
+		propType += `\n${INDENT_CHAR})`;
+	}
+
+	return propType;
 };
 
 /**
