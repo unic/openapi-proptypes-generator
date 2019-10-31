@@ -40,6 +40,15 @@ export const NewsTeaserPropTypes = {
 	img: PropTypes.PropTypes.shape(ImgPropTypes),
 };
 
+export const NewsTeaserListPropTypes = {
+	newsTeaserList: PropTypes.arrayOf(
+		PropTypes.PropTypes.shape(NewsTeaserPropTypes),
+		PropTypes.shape({
+			leadText: PropTypes.string,
+		}),
+	),
+};
+
 export const FooterPropTypes = {
 	title: PropTypes.string.isRequired,
 	websiteDescription: PropTypes.string.isRequired,
