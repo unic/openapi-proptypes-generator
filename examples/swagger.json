@@ -96,6 +96,21 @@
         }
       }
     },
+    "newsTeaserList": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/newsTeaser"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "leadText": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "footer": {
       "type": "object",
       "properties": {
