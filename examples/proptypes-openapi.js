@@ -36,14 +36,14 @@ export const AnObjectPropTypes = {
 export const NewsTeaserPropTypes = {
 	title: PropTypes.string,
 	description: PropTypes.string,
-	link: PropTypes.PropTypes.shape(LinkPropTypes),
-	img: PropTypes.PropTypes.shape(ImgPropTypes),
+	link: PropTypes.shape(LinkPropTypes),
+	img: PropTypes.shape(ImgPropTypes),
 };
 
 export const FooterPropTypes = {
 	title: PropTypes.string.isRequired,
 	websiteDescription: PropTypes.string.isRequired,
-	logo: PropTypes.PropTypes.shape(ImgPropTypes).isRequired,
+	logo: PropTypes.shape(ImgPropTypes).isRequired,
 	copyright: PropTypes.string,
 	footerLinks: PropTypes.arrayOf(PropTypes.shape(LinkPropTypes)),
 	':type': PropTypes.string,
