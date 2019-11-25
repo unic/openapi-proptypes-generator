@@ -60,9 +60,10 @@ const getRef = ref => ref.split('/').pop();
  * Creates the string for the value of a property.
  * @param {String} propertyName - The key (name) of the property.
  * @param {Object} property - The property to generate the value from.
+ * @param {Boolean} prefixReturn - Add Proptypes Prefix to return.
  * @returns {string}
  */
-const getPropTypeValue = (propertyName, property) => {
+const getPropTypeValue = (propertyName, property, prefixReturn = true) => {
 	let propType = ``;
 
 	switch (property.type) {
@@ -114,7 +115,7 @@ const getPropTypeValue = (propertyName, property) => {
 			break;
 	}
 
-	return `PropTypes.${propType}`;
+	return `${prefixReturn ? 'PropTypes.' : ''}${propType}`;
 };
 
 /**
@@ -127,7 +128,7 @@ const getPropTypeValueFromUntyped = (propertyName, property) => {
 	let propType = ``;
 
 	if (property.$ref) {
-		propType = getPropTypeValue(propertyName, { type: 'object', ...property });
+		propType = getPropTypeValue(propertyName, { type: 'object', ...property }, false);
 	} else if (property.allOf) {
 		propType += 'arrayOf(';
 		property.allOf.forEach(item => {
