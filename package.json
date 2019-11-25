@@ -1,6 +1,6 @@
 {
   "name": "openapi-proptypes-generator",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Generate PropTypes from openAPI 3 schemas",
   "main": "src/schemaToPropTypes.js",
   "scripts": {
