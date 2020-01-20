@@ -66,6 +66,12 @@ const getRef = ref => ref.split('/').pop();
 const getPropTypeValue = (propertyName, property, prefixReturn = true) => {
 	let propType = ``;
 
+	if (typeof property.enum !== 'undefined') {
+		const items = JSON.stringify(property.enum);
+		propType += `oneOf(${items})`;
+		return `${prefixReturn ? 'PropTypes.' : ''}${propType}`;
+	}
+
 	switch (property.type) {
 		case 'array':
 			if (property.items.$ref) {
