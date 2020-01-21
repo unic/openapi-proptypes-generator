@@ -1,0 +1,87 @@
+swagger: '2.0'
+info:
+  title: Swagger View Model Definitions
+  version: '1.0'
+paths:
+  '/dummy':
+    get:
+      operationId: dummy
+      responses:
+        '200':
+          description: OK
+definitions:
+  enumDefinition:
+    type: string
+    enum:
+      - default
+      - special
+  objectDefinition:
+    type: object
+    properties:
+      href:
+        type: string
+      text:
+        type: string
+  arrayDefinition:
+    type: array
+    items:
+      type: string
+  demoObject:
+    type: object
+    properties:
+      inlineEnum:
+        type: string
+        enum:
+          - default
+          - special
+      inlineEnumRequired:
+        type: string
+        enum:
+          - default
+          - special
+      inlineObject:
+        type: object
+        properties:
+          href:
+            type: string
+          text:
+            type: string
+      inlineObjectRequired:
+        type: object
+        properties:
+          href:
+            type: string
+          text:
+            type: string
+      inlineArray:
+        type: array
+        items:
+          type: string
+      inlineArrayRequired:
+        type: array
+        items:
+          type: string
+      arrRequired:
+        type: array
+        items:
+          type: string
+      refEnum:
+        $ref: '#/definitions/enumDefinition'
+      refEnumRequired:
+        $ref: '#/definitions/enumDefinition'
+      refObject:
+        $ref: '#/definitions/objectDefinition'
+      refObjectRequired:
+        $ref: '#/definitions/objectDefinition'
+      refArray:
+        $ref: '#/definitions/arrayDefinition'
+      refArrayRequired:
+        $ref: '#/definitions/arrayDefinition'
+
+    required:
+      - inlineEnumRequired
+      - inlineObjectRequired
+      - inlineArrayRequired
+      - refEnumRequired
+      - refObjectRequired
+      - refArrayRequired

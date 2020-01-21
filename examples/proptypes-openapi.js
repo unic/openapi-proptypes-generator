@@ -11,17 +11,11 @@ export const LinkPropTypes = {
 	text: PropTypes.string,
 };
 
-export const CarouselTeasersPropTypes = {
-	carouselTeasers: PropTypes.arrayOf(PropTypes.shape(NewsTeaserPropTypes)),
-};
+export const CarouselTeasersPropTypes = PropTypes.arrayOf(PropTypes.shape(NewsTeaserPropTypes));
 
-export const ASimpleStringPropTypes = {
-	aSimpleString: PropTypes.string,
-};
+export const ASimpleStringPropTypes = PropTypes.string;
 
-export const ANumberPropTypes = {
-	aNumber: PropTypes.number,
-};
+export const ANumberPropTypes = PropTypes.number;
 
 export const AnObjectPropTypes = {
 	aNestedObject: PropTypes.shape({
@@ -49,10 +43,6 @@ export const FooterPropTypes = {
 	':type': PropTypes.string,
 };
 
-export const ItemsOrderPropTypes = {
-	':itemsOrder': PropTypes.arrayOf(PropTypes.string),
-};
+export const ItemsOrderPropTypes = PropTypes.arrayOf(PropTypes.string);
 
-export const OgsitePropTypes = {
-	'og:site': PropTypes.string,
-};
+export const OgsitePropTypes = PropTypes.string;
