@@ -61,10 +61,6 @@ definitions:
         type: array
         items:
           type: string
-      arrRequired:
-        type: array
-        items:
-          type: string
       refEnum:
         $ref: '#/definitions/enumDefinition'
       refEnumRequired:

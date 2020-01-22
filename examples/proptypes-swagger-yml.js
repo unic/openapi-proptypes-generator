@@ -23,7 +23,6 @@ export const DemoObjectPropTypes = {
 	}).isRequired,
 	inlineArray: PropTypes.arrayOf(PropTypes.string),
 	inlineArrayRequired: PropTypes.arrayOf(PropTypes.string).isRequired,
-	arrRequired: PropTypes.arrayOf(PropTypes.string),
 	refEnum: EnumDefinitionPropTypes,
 	refEnumRequired: EnumDefinitionPropTypes.isRequired,
 	refObject: PropTypes.shape(ObjectDefinitionPropTypes),
