@@ -4,6 +4,7 @@ const FILE_IMPORTS = `import PropTypes from 'prop-types';\n`;
 const COMPONENT_NAME_SUFFIX = 'PropTypes';
 const INDENT_CHAR = '\t';
 const QUOTE_CHAR = "'";
+let schemas;
 
 /**
  * Formats the component name based on React standards and a suffix to avoid name collisions.
@@ -27,14 +28,15 @@ const getIndentation = (indentation = indentLevel) =>
 /**
  * Decorator to add indentation to the strings output from any needed functions.
  * @param {Function} func - The function returning a string whose return needs to be decorated.
- * @param {Boolean} prefix - Whether the indentation should happen as a prefix or as a suffix. Prefix is default
+ * @param {Boolean} prefix - Whether should add prefix.
+ * @param {Boolean} suffix - Whether should add suffix. Negation to prefix is default.
  * @returns {function(args: Array): string} - The decorated String
  * @private
  */
-const useIndentation = (func, prefix = true) => args => {
+const useIndentation = (func, prefix = true, suffix = !prefix) => args => {
 	const indents = getIndentation();
 
-	return `${prefix ? indents : ''}${func.apply(this, args)}${prefix ? '' : indents}`;
+	return `${prefix ? indents : ''}${func.apply(this, args)}${suffix ? indents : ''}`;
 };
 
 /**
@@ -42,12 +44,21 @@ const useIndentation = (func, prefix = true) => args => {
  * @param {String} propName - The name of the property to be checked.
  * @param {Object} property - The property itself (is property.required a valid openAPI format?).
  * @param {Array} requiredProps - The array of required properties in a schema.
+ * @param {Boolean} commaSuffix - Whether should append a comma at the end.
  * @returns {string}
  */
-const getRequired = (propName, property, requiredProps = []) =>
-	Array.isArray(requiredProps) && (requiredProps.indexOf(propName) > -1 || property.required)
-		? '.isRequired,'
-		: ',';
+const getRequired = (propName, property, requiredProps = [], commaSuffix) => {
+	let requiredStr =
+		Array.isArray(requiredProps) && (requiredProps.indexOf(propName) > -1 || property.required)
+			? '.isRequired'
+			: '';
+
+	if (commaSuffix) {
+		requiredStr += ',';
+	}
+
+	return requiredStr;
+};
 
 /**
  * Returns the name of the reference.
@@ -64,7 +75,14 @@ const getRef = ref => ref.split('/').pop();
  * @returns {string}
  */
 const getPropTypeValue = (propertyName, property, prefixReturn = true) => {
+	let shouldPrefixReturn = prefixReturn;
 	let propType = ``;
+
+	if (typeof property.enum !== 'undefined') {
+		const items = JSON.stringify(property.enum);
+		propType += `oneOf(${items})`;
+		return `${shouldPrefixReturn ? 'PropTypes.' : ''}${propType}`;
+	}
 
 	switch (property.type) {
 		case 'array':
@@ -111,11 +129,12 @@ const getPropTypeValue = (propertyName, property, prefixReturn = true) => {
 
 		default:
 			// eslint-disable-next-line no-use-before-define
-			propType += getPropTypeValueFromUntyped(propertyName, property);
+			propType += getPropTypeValueFromUntyped(propertyName, property, shouldPrefixReturn);
+			shouldPrefixReturn = false;
 			break;
 	}
 
-	return `${prefixReturn ? 'PropTypes.' : ''}${propType}`;
+	return `${shouldPrefixReturn ? 'PropTypes.' : ''}${propType}`;
 };
 
 /**
@@ -124,23 +143,35 @@ const getPropTypeValue = (propertyName, property, prefixReturn = true) => {
  * @param {Object} property - The property to generate the value from.
  * @returns {string}
  */
-const getPropTypeValueFromUntyped = (propertyName, property) => {
+const getPropTypeValueFromUntyped = (propertyName, property, prefixReturn) => {
+	let shouldPrefixReturn = prefixReturn;
 	let propType = ``;
 
 	if (property.$ref) {
-		propType = getPropTypeValue(propertyName, { type: 'object', ...property }, false);
+		const refPropertyName = property.$ref.split('/').reverse()[0];
+		const refComponentName = formatComponentName(refPropertyName);
+		const refDefinition = schemas[refPropertyName] || {};
+		const isObjectRefDefinition = refDefinition.type === 'object';
+
+		if (isObjectRefDefinition) {
+			shouldPrefixReturn = true;
+			propType = getPropTypeValue(propertyName, { type: 'object', ...property }, false);
+		} else {
+			shouldPrefixReturn = false;
+			propType = refComponentName;
+		}
 	} else if (property.allOf) {
+		shouldPrefixReturn = true;
 		propType += 'arrayOf(';
 		property.allOf.forEach(item => {
-			indentLevel += 1;
 			const indentation = getIndentation();
 			propType += `\n${indentation}${getPropTypeValue(propertyName, item)},`;
-			indentLevel -= 1;
 		});
-		propType += `\n${INDENT_CHAR})`;
+
+		propType += `\n${indentLevel > 1 ? INDENT_CHAR : ''})`;
 	}
 
-	return propType;
+	return `${shouldPrefixReturn ? 'PropTypes.' : ''}${propType}`;
 };
 
 /**
@@ -148,15 +179,24 @@ const getPropTypeValueFromUntyped = (propertyName, property) => {
  * @param {String} name - The key (name) of the property.
  * @param {Object} property - The property to generate the value from.
  * @param {Array} requiredProps - The array of required properties in a schema.
+ * @param {Boolean} isObjectDefinition - Whether provided property is an object.
  * @returns {string}
  */
-const propTypeString = (name, property, requiredProps) => {
+const propTypeString = (name, property, requiredProps, isObjectDefinition) => {
 	let str = '';
-	// Add quotes to property name when it contains non-words chars
-	const propertyKey = /^[a-z]\w+$/i.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
+	if (isObjectDefinition) {
+		// Add quotes to property name when it contains non-words chars
+		const propertyKey = /^[a-z]\w+$/i.test(name) ? `${name}` : `${QUOTE_CHAR}${name}${QUOTE_CHAR}`;
 
-	str += `${propertyKey}: ${getPropTypeValue(name, property)}`;
-	str += `${getRequired(name, property, requiredProps)}\n`;
+		str += `${propertyKey}: `;
+	}
+
+	str += `${getPropTypeValue(name, property)}`;
+	str += `${getRequired(name, property, requiredProps, isObjectDefinition)}`;
+
+	if (isObjectDefinition) {
+		str += '\n';
+	}
 
 	return str;
 };
@@ -165,11 +205,20 @@ const propTypeString = (name, property, requiredProps) => {
  * Curry reducer to stack the strings for each PropTypes. It passes the needed information in the reducer context.
  * @param {Object} properties - The properties object in a schema.
  * @param {Array} requiredProps - The array of required properties in a schema.
+ * @param {Boolean} isObjectDefinition - Whether provided property is an object.
  * @returns {function(str: String, propertyName: String): string} - The `reduce` callback function, which gets the accumulator (`str`) and the current value (`propertyName`).
  */
-const propertiesReducer = (properties, requiredProps) => (str, propertyName) => {
+const propertiesReducer = (properties, requiredProps, isObjectDefinition) => (
+	str,
+	propertyName,
+) => {
 	const propTypeStringIndented = useIndentation(propTypeString);
-	const propType = propTypeStringIndented([propertyName, properties[propertyName], requiredProps]);
+	const propType = propTypeStringIndented([
+		propertyName,
+		properties[propertyName],
+		requiredProps,
+		isObjectDefinition,
+	]);
 
 	return `${str}${propType}`;
 };
@@ -181,13 +230,18 @@ const propertiesReducer = (properties, requiredProps) => (str, propertyName) => 
  * @returns {string}
  */
 const getPropTypes = (schemaName, schema) => {
+	const isObjectDefinition = schema.type === 'object';
 	const requiredProps = 'required' in schema && schema.required;
-	const propTypeStringIndented = useIndentation(propTypeString);
-	const reducer = propertiesReducer(schema.properties, requiredProps);
+	const propTypeStringIndented = useIndentation(
+		propTypeString,
+		isObjectDefinition,
+		isObjectDefinition,
+	);
+	const reducer = propertiesReducer(schema.properties, requiredProps, isObjectDefinition);
 
 	return schema.type === 'object'
 		? Object.keys(schema.properties).reduce(reducer, '')
-		: propTypeStringIndented([schemaName, schema, requiredProps]);
+		: propTypeStringIndented([schemaName, schema, requiredProps, isObjectDefinition]);
 };
 
 /**
@@ -199,7 +253,14 @@ const getPropTypes = (schemaName, schema) => {
  */
 const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
-	return `${str}\nexport const ${componentName} = {\n${getPropTypes(schemaName, schema)}};\n`;
+	const isObjectDefinition = schema.type === 'object';
+	const propTypes = getPropTypes(schemaName, schema);
+
+	if (isObjectDefinition) {
+		return `${str}\nexport const ${componentName} = {\n${propTypes}};\n`;
+	}
+
+	return `${str}\nexport const ${componentName} = ${propTypes};\n`;
 };
 
 /**
@@ -221,7 +282,6 @@ const generatePropTypes = (api, schemaToParse) => {
 		hasSchemas = 'definitions' in api;
 	}
 
-	let schemas;
 	if (hasSchemas) {
 		switch (apiVersion) {
 			case 'swagger2':

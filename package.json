@@ -1,46 +1,47 @@
 {
-  "name": "openapi-proptypes-generator",
-  "version": "1.3.1",
-  "description": "Generate PropTypes from openAPI 3 schemas",
-  "main": "src/schemaToPropTypes.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-openapi": "index.js ./examples/openapi.json ./examples/proptypes-openapi.js datamodels",
-    "generate-swagger": "index.js examples/swagger.json ./examples/proptypes-swagger.js",
-    "lint": "eslint --fix \"{index.js,src/*.js}\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/unic/openapi-proptypes-generator.git"
-  },
-  "keywords": [
-    "openapi",
-    "open",
-    "api",
-    "swagger",
-    "react",
-    "proptypes",
-    "prop-types",
-    "generator"
-  ],
-  "author": "Oriol Torrent Florensa @ Unic AG (https://unic.com)",
-  "license": "LGPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/unic/openapi-proptypes-generator/issues"
-  },
-  "homepage": "https://github.com/unic/openapi-proptypes-generator#readme",
-  "dependencies": {
-    "js-yaml": "3.13.1",
-    "minimist": "1.2.0",
-    "swagger-parser": "8.0.2"
-  },
-  "devDependencies": {
-    "babel-eslint": "10.0.1",
-    "eslint": "5.3.0",
-    "eslint-config-airbnb-base": "13.1.0",
-    "eslint-config-prettier": "6.4.0",
-    "eslint-plugin-import": "2.18.2",
-    "eslint-plugin-prettier": "3.1.1",
-    "prettier": "1.18.2"
-  }
+	"name": "openapi-proptypes-generator",
+	"version": "2.0.0",
+	"description": "Generate PropTypes from openAPI 3 schemas",
+	"main": "src/schemaToPropTypes.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"generate-openapi": "./index.js ./examples/openapi.json ./examples/proptypes-openapi.js datamodels",
+		"generate-swagger": "./index.js ./examples/swagger.json ./examples/proptypes-swagger.js",
+		"generate-swagger-yml": "./index.js ./examples/swagger.yml ./examples/proptypes-swagger-yml.js",
+		"lint": "eslint --fix \"{index.js,src/*.js}\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/unic/openapi-proptypes-generator.git"
+	},
+	"keywords": [
+		"openapi",
+		"open",
+		"api",
+		"swagger",
+		"react",
+		"proptypes",
+		"prop-types",
+		"generator"
+	],
+	"author": "Oriol Torrent Florensa @ Unic AG (https://unic.com)",
+	"license": "LGPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/unic/openapi-proptypes-generator/issues"
+	},
+	"homepage": "https://github.com/unic/openapi-proptypes-generator#readme",
+	"dependencies": {
+		"js-yaml": "3.13.1",
+		"minimist": "1.2.0",
+		"swagger-parser": "8.0.2"
+	},
+	"devDependencies": {
+		"babel-eslint": "10.0.1",
+		"eslint": "5.3.0",
+		"eslint-config-airbnb-base": "13.1.0",
+		"eslint-config-prettier": "6.4.0",
+		"eslint-plugin-import": "2.18.2",
+		"eslint-plugin-prettier": "3.1.1",
+		"prettier": "1.18.2"
+	}
 }
