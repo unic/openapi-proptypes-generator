@@ -44,7 +44,7 @@ const useIndentation = (func, prefix = true, suffix = !prefix) => args => {
  * @param {String} propName - The name of the property to be checked.
  * @param {Object} property - The property itself (is property.required a valid openAPI format?).
  * @param {Array} requiredProps - The array of required properties in a schema.
- * @param {Boolean} commaSuffix - Whether should append a comma un the end.
+ * @param {Boolean} commaSuffix - Whether should append a comma at the end.
  * @returns {string}
  */
 const getRequired = (propName, property, requiredProps = [], commaSuffix) => {
@@ -234,8 +234,8 @@ const getPropTypes = (schemaName, schema) => {
 	const requiredProps = 'required' in schema && schema.required;
 	const propTypeStringIndented = useIndentation(
 		propTypeString,
-		!!isObjectDefinition,
-		!isObjectDefinition ? false : undefined,
+		isObjectDefinition,
+		isObjectDefinition,
 	);
 	const reducer = propertiesReducer(schema.properties, requiredProps, isObjectDefinition);
 
