@@ -27,6 +27,8 @@ export const AnObjectPropTypes = {
 	}),
 };
 
+export const EmptyObjectPropTypes = {};
+
 export const NewsTeaserPropTypes = {
 	title: PropTypes.string,
 	description: PropTypes.string,

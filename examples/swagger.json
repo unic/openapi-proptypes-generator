@@ -79,6 +79,9 @@
         }
       }
     },
+    "emptyObject": {
+      "type": "object"
+    },
     "newsTeaser": {
       "type": "object",
       "properties": {

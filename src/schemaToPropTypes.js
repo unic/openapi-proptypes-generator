@@ -238,9 +238,11 @@ const getPropTypes = (schemaName, schema) => {
 		isObjectDefinition,
 	);
 	const reducer = propertiesReducer(schema.properties, requiredProps, isObjectDefinition);
+	const reduceSchemaProperties =
+		schema.properties && Object.keys(schema.properties).reduce(reducer, '');
 
-	return schema.type === 'object'
-		? Object.keys(schema.properties).reduce(reducer, '')
+	return isObjectDefinition
+		? reduceSchemaProperties
 		: propTypeStringIndented([schemaName, schema, requiredProps, isObjectDefinition]);
 };
 
@@ -254,10 +256,16 @@ const getPropTypes = (schemaName, schema) => {
 const schemasReducer = (str, [schemaName, schema]) => {
 	const componentName = formatComponentName(schemaName);
 	const isObjectDefinition = schema.type === 'object';
+	const hasProperties = !!schema.properties;
 	const propTypes = getPropTypes(schemaName, schema);
 
 	if (isObjectDefinition) {
-		return `${str}\nexport const ${componentName} = {\n${propTypes}};\n`;
+		if (hasProperties) {
+			return `${str}\nexport const ${componentName} = {\n${propTypes}};\n`;
+		}
+
+		// return empty object if type object has no properties
+		return `${str}\nexport const ${componentName} = {};\n`;
 	}
 
 	return `${str}\nexport const ${componentName} = ${propTypes};\n`;
